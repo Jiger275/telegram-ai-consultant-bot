@@ -17,6 +17,9 @@ from dotenv import load_dotenv
 # Import handlers
 from handlers import start, ai_chat
 
+# Import database
+from database.models import get_database
+
 # Load environment variables
 load_dotenv()
 
@@ -36,6 +39,10 @@ async def on_startup(bot: Bot) -> None:
     """
     This function runs when the bot starts
     """
+    # Initialize database
+    db = get_database()
+    await db.init_db()
+
     bot_info = await bot.get_me()
     logging.info("=" * 50)
     logging.info(f"🤖 Бот успешно запущен!")
@@ -52,6 +59,10 @@ async def on_shutdown(bot: Bot) -> None:
     """
     This function runs when the bot shuts down
     """
+    # Close database connection
+    db = get_database()
+    await db.disconnect()
+
     logging.info("=" * 50)
     logging.info("🛑 Остановка бота...")
     logging.info("👋 Бот успешно остановлен!")
